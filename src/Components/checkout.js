@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Base from "../Base/base";
 import {
   useStripe,
@@ -64,6 +64,9 @@ function Checkout() {
     }
   };
   // const elements = useElements();
+  const placeOrderBtnRef = useRef(null);
+  const placeOrderBtn = placeOrderBtnRef.current;
+
   const handleStripePayment = async (orderId, amount) => {
     try {
       const stripePromise = loadStripe(
@@ -72,76 +75,65 @@ function Checkout() {
       const stripe = await stripePromise;
       const elements = stripe.elements();
 
-      // Create an instance of the CardElement
       const cardElement = elements.create("card");
 
-      // Mount the CardElement to a DOM element
       cardElement.mount("#card-element");
 
-      // Handle payment when the user clicks the "Place Order" button
-      document
-        .getElementById("place-order-btn")
-        .addEventListener("click", async () => {
-          const { paymentMethod, error } = await stripe.createPaymentMethod({
-            type: "card",
-            card: cardElement,
+      placeOrderBtn("place-order-btn").addEventListener("click", async () => {
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: "card",
+          card: cardElement,
+        });
+
+        if (error) {
+          console.error("Payment method creation failed:", error);
+          return;
+        }
+
+        const paymentResponse = await fetch(
+          "https://choosify-backend.onrender.com/api/products/make-payment",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-auth-token": localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              orderId,
+              amount,
+              paymentMethod: paymentMethod.id,
+            }),
+          }
+        );
+
+        if (!paymentResponse.ok) {
+          console.error("Payment failed");
+          return;
+        }
+
+        const paymentData = await paymentResponse.json();
+
+        // Confirm the payment on the client side
+        const { paymentIntent, error: paymentError } =
+          await stripe.confirmCardPayment(paymentData.clientSecret, {
+            payment_method: paymentMethod.id,
           });
 
-          if (error) {
-            console.error("Payment method creation failed:", error);
-            return;
-          }
+        if (paymentError) {
+          console.error("Payment confirmation failed:", paymentError);
+          return;
+        }
 
-          // Send payment details to the backend
-          const paymentResponse = await fetch(
-            "https://choosify-backend.onrender.com/api/products/make-payment",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "x-auth-token": localStorage.getItem("token"),
-              },
-              body: JSON.stringify({
-                orderId,
-                amount,
-                paymentMethod: paymentMethod.id,
-              }),
-            }
-          );
+        console.log("Payment successful:", paymentIntent);
 
-          if (!paymentResponse.ok) {
-            console.error("Payment failed");
-            return;
-          }
-
-          const paymentData = await paymentResponse.json();
-
-          // Confirm the payment on the client side
-          const { paymentIntent, error: paymentError } =
-            await stripe.confirmCardPayment(paymentData.clientSecret, {
-              payment_method: paymentMethod.id,
-            });
-
-          if (paymentError) {
-            console.error("Payment confirmation failed:", paymentError);
-            return;
-          }
-
-          // Handle successful payment
-          console.log("Payment successful:", paymentIntent);
-
-          // Show success notification to the user
-          alert("Order placed successfully!");
-
-          // Optionally, update the UI or navigate to a success page
-        });
+        alert("Order placed successfully!");
+      });
     } catch (error) {
       console.error("Error processing payment:", error);
     }
   };
 
   useEffect(() => {
-    // Fetch cart items and total amount from the backend
     const fetchCartItems = async () => {
       try {
         const response = await fetch(
@@ -162,12 +154,11 @@ function Checkout() {
         const responseData = await response.json();
         setCartItems(responseData.cart);
 
-        // Calculate total amount
         const subtotal = responseData.cart.reduce(
           (subtotal, item) => subtotal + item.price,
           0
         );
-        setTotalAmount(subtotal + 10); // Add shipping cost (assuming $10)
+        setTotalAmount(subtotal + 10);
       } catch (error) {
         console.error("Error fetching cart items:", error);
       }

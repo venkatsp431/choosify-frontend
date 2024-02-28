@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const AdminLogin = () => {
   const [adminmail, setadminmail] = useState("");
   const [adminPassword, setadminPassword] = useState("");
-  const [error, setError] = useState(null); // State to handle errors
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleLogin = async () => {

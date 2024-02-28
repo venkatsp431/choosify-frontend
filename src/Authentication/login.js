@@ -51,12 +51,11 @@ function Login() {
         localStorage.setItem("token", res1.token);
         navigate("/");
       } else {
-        // Handle other cases where there's no token (invalid credentials, server error, etc.)
         setError("Invalid email or password");
       }
     } catch (error) {
       console.log(error);
-      setError("An error occurred. Please try again."); // Handle network errors or other unexpected issues
+      setError("An error occurred. Please try again.");
     }
   };
 

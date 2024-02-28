@@ -103,7 +103,6 @@ function Home({ products, setProducts }) {
             </h2>
           </div>
           <Row className="px-xl-5 pb-3">
-            {/* Map through products and render cards */}
             {currentProducts?.map((product, index) => (
               <Col key={index} lg={4} md={6} sm={12} className="pb-1">
                 <Card className="product-item border-0 mb-4">
