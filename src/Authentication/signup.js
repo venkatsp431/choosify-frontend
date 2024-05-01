@@ -37,13 +37,16 @@ function Signup() {
       return;
     }
     const signup = { name, email, contact, password };
-    const res = await fetch("http://localhost:8000/api/users/signup", {
-      method: "POST",
-      body: JSON.stringify(signup),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
+    const res = await fetch(
+      "https://choosify-backend.onrender.com/api/users/signup",
+      {
+        method: "POST",
+        body: JSON.stringify(signup),
+        headers: {
+          "Content-type": "application/json",
+        },
+      }
+    );
     const result = await res.json();
     console.log(res);
     if (res.ok) {
@@ -62,7 +65,7 @@ function Signup() {
 
   return (
     <div className="loginstyles">
-      <h3>Welcome</h3>
+      <h3>Welcome, Please use valid email id for account activation</h3>
       <Alert
         variant="info"
         show={showMessage && !!infoMessage}
@@ -101,7 +104,7 @@ function Signup() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
+            Please use valid email for account activation
           </Form.Text>
         </Form.Group>
 

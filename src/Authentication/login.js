@@ -18,11 +18,10 @@ function Login() {
   const navigate = useNavigate();
 
   const [justifyActive, setJustifyActive] = useState("tab1");
-
   const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // State to track loading status
 
   const handleJustifyClick = (value) => {
     if (value === justifyActive) {
@@ -34,6 +33,7 @@ function Login() {
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true); // Set loading state to true when login starts
       const loginvalues = { email: mail, password: password };
       const res = await fetch(
         "https://choosify-backend.onrender.com/api/users/login",
@@ -47,15 +47,15 @@ function Login() {
       );
       const res1 = await res.json();
       if (res1.token) {
-        console.log(res1.token);
         localStorage.setItem("token", res1.token);
         navigate("/");
       } else {
         setError("Invalid email or password");
       }
     } catch (error) {
-      console.log(error);
       setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false); // Set loading state to false when login ends
     }
   };
 
@@ -121,7 +121,7 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            <div className="d-flex justify-content-between mx-4 mb-4">
+            {/* <div className="d-flex justify-content-between mx-4 mb-4">
               <MDBCheckbox
                 name="flexCheck"
                 value=""
@@ -129,10 +129,14 @@ function Login() {
                 label="Remember me"
               />
               <a href="!#">Forgot password?</a>
-            </div>
+            </div> */}
 
-            <MDBBtn className="mb-4 w-100" onClick={handleLogin}>
-              Sign in
+            <MDBBtn
+              className="mb-4 w-100"
+              onClick={handleLogin}
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
             </MDBBtn>
             {error && <p className="text-danger text-center">{error}</p>}
             <p className="text-center">

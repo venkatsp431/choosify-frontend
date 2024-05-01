@@ -13,6 +13,12 @@ function Home({ products, setProducts }) {
   const [productsPerPage] = useState(6);
   const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    if (products && products.length > 0) {
+      setLoading(false);
+    }
+  }, [products]);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products?.slice(
@@ -22,8 +28,7 @@ function Home({ products, setProducts }) {
   const handleviewdetail = (id) => {
     navigate(`/details/${id}`);
   };
-  // console.log(currentProducts);
-  // Change page
+
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const totalPages = Math.ceil(products.length / productsPerPage);
@@ -103,62 +108,69 @@ function Home({ products, setProducts }) {
               <span class="px-2">Trendy Products</span>
             </h2>
           </div>
-          <Row className="px-xl-5 pb-3">
-            {currentProducts?.map((product, index) => (
-              <Col key={index} lg={4} md={6} sm={12} className="pb-1">
-                <Card className="product-item border-0 mb-4">
-                  <Card.Header className="product-img position-relative overflow-hidden bg-transparent border p-0">
-                    {console.log(
-                      "Image Path:",
-                      product?.productImage?.imagePath?.replace(/\\/g, "/")
-                    )}
-                    {product?.productImage?.imagePath ? (
-                      <Card.Img
-                        variant="top"
-                        src={`https://choosify-backend.onrender.com/${product.productImage.imagePath}`}
-                        alt=""
-                        className="img-fluid w-100"
-                      />
-                    ) : (
-                      <div className="text-center py-5">
-                        <p className="text-muted">Image not available</p>
-                      </div>
-                    )}
-                  </Card.Header>
-                  <Card.Body className="border-left border-right text-center p-0 pt-4 pb-3">
-                    <h6 className="text-truncate mb-3">
-                      {product.productName}
-                    </h6>
-                    <p className="text-muted">{product.description}</p>
-                    <div className="d-flex justify-content-center">
-                      <h6>${product.discountedPrice}</h6>
-                      <h6 className="text-muted ml-2">
-                        <del>${product.oldPrice}</del>
+          {loading ? (
+            // Show loading message while products are loading
+            <div className="text-center">Loading...</div>
+          ) : (
+            <Row className="px-xl-5 pb-3">
+              {currentProducts?.map((product, index) => (
+                <Col key={index} lg={4} md={6} sm={12} className="pb-1">
+                  <Card className="product-item border-0 mb-4">
+                    <Card.Header className="product-img position-relative overflow-hidden bg-transparent border p-0">
+                      {console.log(
+                        "Image Path:",
+                        product?.productImage?.imagePath?.replace(/\\/g, "/")
+                      )}
+                      {product?.productImage?.imagePath ? (
+                        <Card.Img
+                          variant="top"
+                          src={`https://choosify-backend.onrender.com/${product.productImage.imagePath}`}
+                          alt=""
+                          className="img-fluid w-100"
+                        />
+                      ) : (
+                        <div className="text-center py-5">
+                          <p className="text-muted">Image not available</p>
+                        </div>
+                      )}
+                    </Card.Header>
+                    <Card.Body className="border-left border-right text-center p-0 pt-4 pb-3">
+                      <h6 className="text-truncate mb-3">
+                        {product.productName}
                       </h6>
-                    </div>
-                    <div className="mt-3">
-                      <p className="font-weight-bold mb-1">Available Sizes:</p>
-                      <ul className="list-unstyled">
-                        {product.availableSizes.map((size, index) => (
-                          <li key={index}>{size}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </Card.Body>
-                  <Card.Footer className="d-flex justify-content-between bg-light border">
-                    <Button
-                      variant="link"
-                      className="btn-sm text-dark p-0"
-                      onClick={() => handleviewdetail(product._id)}
-                    >
-                      <i className="fas fa-eye text-primary mr-1"></i>View
-                      Detail
-                    </Button>
-                  </Card.Footer>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+                      <p className="text-muted">{product.description}</p>
+                      <div className="d-flex justify-content-center">
+                        <h6>${product.discountedPrice}</h6>
+                        <h6 className="text-muted ml-2">
+                          <del>${product.oldPrice}</del>
+                        </h6>
+                      </div>
+                      <div className="mt-3">
+                        <p className="font-weight-bold mb-1">
+                          Available Sizes:
+                        </p>
+                        <ul className="list-unstyled">
+                          {product.availableSizes.map((size, index) => (
+                            <li key={index}>{size}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </Card.Body>
+                    <Card.Footer className="d-flex justify-content-between bg-light border">
+                      <Button
+                        variant="link"
+                        className="btn-sm text-dark p-0"
+                        onClick={() => handleviewdetail(product._id)}
+                      >
+                        <i className="fas fa-eye text-primary mr-1"></i>View
+                        Detail
+                      </Button>
+                    </Card.Footer>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          )}
           <Row className="justify-content-center">
             <Col lg={3} md={6} sm={12} className="pb-1">
               <Pagination>
