@@ -124,9 +124,6 @@ function Base({ children }) {
                         {user}
                       </Dropdown.Toggle>
                       <Dropdown.Menu className="text-pad">
-                        <Dropdown.Item onClick={() => navigate("/myprofile")}>
-                          View Profile
-                        </Dropdown.Item>
                         <Dropdown.Item onClick={handleLogout}>
                           Logout
                         </Dropdown.Item>
