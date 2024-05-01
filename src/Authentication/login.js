@@ -12,7 +12,7 @@ import {
   MDBCheckbox,
 } from "mdb-react-ui-kit";
 import Base from "../Base/base";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
@@ -60,12 +60,23 @@ function Login() {
   };
 
   return (
-    <Base>
+    <>
       <div class="container-fluid bg-secondaryy mb-5">
         <div
           class="d-flex flex-column align-items-center justify-content-center"
           style={{ minHeight: "100px" }}
         >
+          <div
+            style={{
+              border: "1px solid #ccc",
+              padding: "10px",
+              marginBottom: "20px",
+            }}
+          >
+            <h4>Sample Login Credentials:</h4>
+            <p>Email: venkatsp1997@gmail.com</p>
+            <p>Password: venkat123</p>
+          </div>
           <h1 class="font-weight-semi-bold text-uppercase mb-3">Login</h1>
           <div class="d-inline-flex">
             <p class="m-0">
@@ -82,12 +93,12 @@ function Login() {
           className="mb-3 d-flex flex-row justify-content-between"
         >
           <MDBTabsItem>
-            <MDBTabsLink
+            {/* <MDBTabsLink
               onClick={() => handleJustifyClick("tab1")}
               active={justifyActive === "tab1"}
             >
               Login
-            </MDBTabsLink>
+            </MDBTabsLink> */}
           </MDBTabsItem>
         </MDBTabs>
 
@@ -128,9 +139,12 @@ function Login() {
               Not a member? <a href="/signup">Register</a>
             </p>
           </MDBTabsPane>
+          <Link to="/adminlogin">
+            <button type="button">Go to Admin Login</button>
+          </Link>
         </MDBTabsContent>
       </MDBContainer>
-    </Base>
+    </>
   );
 }
 

@@ -100,7 +100,7 @@ function Base({ children }) {
             <a href="" className="btn border" onClick={handleCartClick}>
               <i className="fas fa-shopping-cart text-primaryy"></i>
 
-              <span className="badge text-secondary">{cart}</span>
+              <span className="badge text-secondary">{}</span>
             </a>
           </div>
         </div>

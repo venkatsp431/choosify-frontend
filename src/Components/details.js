@@ -35,6 +35,11 @@ const ShopDetail = ({ products, setProducts }) => {
 
   const handleAddToCart = async () => {
     try {
+      if (!token) {
+        alert("Please log in to add items to the cart.");
+        window.location.href = "/login";
+        return;
+      }
       if (!selectedSize) {
         alert("Please select a size before adding to cart.");
         return;

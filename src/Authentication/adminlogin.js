@@ -41,6 +41,17 @@ const AdminLogin = () => {
     <div className="container d-flex justify-content-center align-items-center vh-100">
       <div className="border p-4 rounded shadow-sm">
         <h2 className="text-center">Admin Login</h2>
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "10px",
+            marginBottom: "20px",
+          }}
+        >
+          <h4>Sample Login Credentials:</h4>
+          <p>Email: vincy@gusto.co</p>
+          <p>Password: qwerty1235</p>
+        </div>
         <form>
           <div className="mb-3">
             <label htmlFor="username" className="form-label">

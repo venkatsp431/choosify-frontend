@@ -193,7 +193,7 @@ function Cart() {
                   </tbody>
                 </table>
               ) : (
-                <p>Please login to view your cart.</p>
+                <h1>Please login to view your cart.</h1>
               )}
             </div>
             <div class="col-lg-4">
